@@ -44,9 +44,8 @@ class UserController {
         .min(6)
         .when('currentPassword', (currentPassword, field) =>
           currentPassword ? field.required() : field
-      ),
-      passwordConfirmation: Yup.string()
-        .when('password', (password, field) =>
+        ),
+      passwordConfirmation: Yup.string().when('password', (password, field) =>
         password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
     });
