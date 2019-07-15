@@ -1,8 +1,11 @@
 import * as Yup from 'yup';
+import { startOfHour, parseISO, isBefore, format } from 'date-fns';
+import { pt } from 'date-fns/locale/pt';
 
 import User from '../models/User';
 import Upload from '../models/Upload';
 import Appointment from '../models/Appointment';
+import Notification from '../schemas/Notification';
 
 class AppointmentController {
   async index(req, res) {
@@ -45,7 +48,15 @@ class AppointmentController {
 
     const { provider_id, date } = req.body;
 
-    // Check is provider
+    if (req.userId === provider_id) {
+      return res
+        .status(401)
+        .json({ error: 'You can not schedule an appointment for yourself!' });
+    }
+
+    /**
+     * Check is provider
+     */
     const isProvider = await User.findOne({
       where: { id: provider_id, provider: true },
     });
@@ -56,10 +67,30 @@ class AppointmentController {
         .json({ error: 'You can only create appointments with providers!' });
     }
 
+    /**
+     * Check past dates
+     */
+    const housStart = startOfHour(parseISO(date)); // Ignora os minutos e segundos zerando os mesmos.
+
     const appointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
       date,
+    });
+
+    /**
+     * Notify provider
+     */
+    const user = await User.findByPk(req.userId);
+    const formattedDate = format(
+      housStart,
+      "MMMM dd 'at' H:mm'h'"
+      // { locale: pt} // Se quiser usar localização na formatação
+    );
+
+    await Notification.create({
+      content: `New appointment scheduled by ${user.name} on ${formattedDate}`,
+      user: provider_id,
     });
 
     return res.json(appointment);
