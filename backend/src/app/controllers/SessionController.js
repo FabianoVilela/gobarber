@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import * as Yup from 'yup';
+import * as Yup from 'yup'; // Importa todo conteúdo de 'yup' e joga na variável Yup
 
 import User from '../models/User';
 import authConfig from '../../config/auth';

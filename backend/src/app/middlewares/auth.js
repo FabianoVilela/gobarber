@@ -10,7 +10,7 @@ export default async (req, res, next) => {
     return res.status(401).json({ error: 'Token not provided!' });
   }
 
-  const [, token] = authHeader.split(' '); // Desestruturação , (posição 1)
+  const [, token] = authHeader.split(' '); // Desestruturação: desta forma recupera somente a posição 1
 
   try {
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);

@@ -17,7 +17,7 @@ const upload = multer(multerConfig);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
-routes.use(authMiddleware); // Valido somente para as rodas que estão abaixo
+routes.use(authMiddleware); // Aplicado somente para as rotas que estão abaixo
 routes.put('/users', UserController.update);
 routes.get('/providers', ProviderController.index);
 
@@ -29,5 +29,6 @@ routes.post('/appointments', AppointmentController.store);
 routes.get('/schedule', ScheduleController.index);
 
 routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 export default routes;
