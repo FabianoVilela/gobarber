@@ -31,6 +31,12 @@ class User extends Model {
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
+
+  async isProvider(userId) {
+    await User.findOne({
+      where: { id: userId, provider: true },
+    });
+  }
 }
 
 export default User;
